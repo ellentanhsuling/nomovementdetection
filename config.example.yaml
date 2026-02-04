@@ -1,0 +1,15 @@
+# IVAD config example (optional; CLI args override)
+# Copy to config.yaml and edit as needed.
+
+# Seconds without any motion before triggering an alert
+stillness_threshold_seconds: 60.0
+
+# How often to grab a frame and check for motion (seconds)
+check_interval_seconds: 1.0
+
+# Minimum contour area (pixels²) to count as motion; increase to ignore small noise
+min_contour_area: 500
+
+# Raspberry Pi only: use GPIO for alert (buzzer/LED on Pi HAT)
+use_gpio: false
+gpio_pin: 17  # BCM pin number
