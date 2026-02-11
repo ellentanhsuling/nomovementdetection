@@ -2,11 +2,32 @@
 
 Detects long periods without motion (e.g. person down, no activity) using **Raspberry Pi 5** + camera module + Pi HAT. You can **develop and test on Windows** (with a webcam), then deploy the same code on the Pi.
 
-## Build and run on Windows
+---
+
+## For students – get the code and run it
+
+1. **Get the repo URL** from your instructor (e.g. `https://github.com/.../IVAD`).
+2. **Clone** and open the folder:
+   ```powershell
+   git clone <REPO_URL>
+   cd IVAD
+   ```
+3. **Set up and run** (Windows):
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   pip install -r requirements.txt
+   python -m src.main --verbose
+   ```
+   Use a webcam; you’ll see status every 5s and an alert after 60s of no motion. Stop with **Ctrl+C**.
+
+---
+
+## Build and run on Windows (detailed)
 
 1. **Create a virtual environment** (recommended):
    ```powershell
-   cd c:\Users\ellen\OneDrive\Documents\IVAD
+   cd IVAD
    python -m venv .venv
    .\.venv\Scripts\Activate.ps1
    ```
@@ -20,7 +41,7 @@ Detects long periods without motion (e.g. person down, no activity) using **Rasp
    ```powershell
    python -m src.main
    ```
-   - Optional: `--stillness-seconds 30` (alert after 30 s of no motion), `--test-camera` (use second webcam).
+   - Optional: `--verbose` (see status and motion), `--stillness-seconds 30` (alert after 30 s), `--test-camera` (second webcam).
 
 On Windows the app uses **OpenCV** and your webcam. Alerts are printed to the console (no GPIO).
 
