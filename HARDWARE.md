@@ -274,11 +274,130 @@ Only worth it if IVAD will evolve to include neural-network-based detection. For
 
 ---
 
-## Recommendation
+## Head-to-Head: Raspberry Pi 5 vs Arduino UNO Q
 
-**For IVAD as it exists today, the Raspberry Pi 5 remains the top recommendation.** It runs the codebase without modification, has excellent camera support via Picamera2, ample processing power, and a rich GPIO/HAT ecosystem for alerts. The Raspberry Pi 4 is a fine budget alternative with identical compatibility.
+This section compares the two strongest candidates purely on hardware merit — **ignoring the existing codebase** — and asks: if you were starting from scratch and building a camera-based non-movement detection system, which board gives you the better platform?
 
-**The Arduino UNO Q is a strong second choice** — and a genuine surprise if you were expecting a classic Arduino. It runs Debian Linux, supports Python and OpenCV, has built-in AI acceleration and dual ISPs for camera processing, and includes eMMC storage (more reliable than SD cards for always-on use). The trade-offs are that GPIO requires going through the MCU's RPC bridge (a modest code change to `alerts.py`), MIPI-CSI cameras need a carrier board, and the ecosystem is still young. If you are drawn to the Arduino platform or plan to add AI/ML features, the UNO Q deserves serious consideration — check the [Arduino Store](https://www.arduino.cc/product-uno-q/) for current pricing and availability.
+### 1. Raw Processing Power
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| CPU cores | 4x Cortex-A76 @ 2.4 GHz | 4x Cortex-A53 @ 2.0 GHz |
+| Architecture generation | ARMv8.2-A (2019, high-performance) | ARMv8.0-A (2012, efficiency-focused) |
+| Single-core performance | ~2–3x faster per core | Baseline |
+| GPU | VideoCore VII | Adreno 702 @ 845 MHz |
+
+**Winner: Raspberry Pi 5.** The Cortex-A76 is a significantly more powerful core than the A53. For OpenCV frame processing, the Pi 5 has roughly 2–3x more single-threaded CPU headroom. Both are more than sufficient for 640x480 frame differencing at 1 fps, but the Pi 5 leaves far more room to grow (higher resolution, faster frame rates, heavier algorithms).
+
+### 2. Camera System
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| Primary camera interface | MIPI CSI-2 (dedicated connector on board) | MIPI CSI (via bottom JMEDIA header + carrier board) |
+| Camera module | Official Camera Module 3 (12 MP, autofocus) — just plug in a ribbon cable | Requires purchasing a separate carrier board, then connecting a MIPI camera to it |
+| USB camera | USB 3.0 ports — plug in any USB webcam directly | USB camera via USB-C dongle |
+| ISP (image signal processor) | Built into Broadcom SoC | 2x ISP (13+13 MP or 25 MP @ 30 fps) — Qualcomm dedicated hardware |
+| Software support | Picamera2 (mature, well-documented, Pi-optimized) | Qualcomm camera stack on Debian (newer, less community documentation) |
+
+**Winner: Raspberry Pi 5 for simplicity; UNO Q for raw ISP hardware.** The Pi 5's camera setup is dramatically simpler — one ribbon cable, one `apt install`, done. The UNO Q has superior dedicated ISP hardware (dual 13 MP processors designed for machine vision), but accessing it requires a carrier board and a less mature software stack. For a straightforward motion detection camera, the Pi's plug-and-play simplicity is a real practical advantage. The UNO Q's ISPs become more relevant if you later need high-resolution multi-camera setups or hardware-accelerated image preprocessing.
+
+### 3. AI / Machine Learning Readiness
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| On-chip AI acceleration | None (CPU-only inference, or add Coral USB) | Qualcomm AI Engine integrated into QRB2210 |
+| GPU compute | VideoCore VII (limited ML use) | Adreno 702 (usable for GPU-accelerated inference) |
+| ISP for vision pipelines | Basic | Dual ISP, designed for ML vision pipelines |
+| ML framework support | TensorFlow Lite, ONNX, PyTorch (CPU); Coral Edge TPU via USB | Qualcomm AI frameworks + containerized models via Arduino App Lab |
+
+**Winner: Arduino UNO Q.** This is the UNO Q's biggest differentiator. If IVAD evolves from simple frame differencing to neural-network-based detection (e.g., pose estimation to detect if someone has fallen, or person vs. pet classification), the UNO Q's integrated AI acceleration and dual ISPs are purpose-built for this. The Pi 5 can do ML inference on its CPU (or with a ~$30 Coral USB add-on), but the UNO Q has it baked into the silicon.
+
+### 4. GPIO and Alert Hardware
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| GPIO access | 40-pin header, direct from Linux userspace | Through STM32 MCU via RPC bridge |
+| HAT ecosystem | Massive (hundreds of Pi HATs) | UNO shield-compatible + Qwiic connector for Modulino nodes |
+| Real-time GPIO | Not guaranteed (Linux is not a real-time OS — GPIO can be delayed by scheduling) | STM32 MCU runs on Zephyr RTOS — deterministic, real-time GPIO response |
+| Complexity | Simple: `GPIO.output(pin, HIGH)` from Python | More complex: Linux sends RPC command to MCU, MCU drives pin |
+
+**Winner: Depends on priority.** The Pi 5 wins on simplicity and ecosystem (just pick from hundreds of Pi HATs and drive them from Python). The UNO Q wins on real-time reliability — because GPIO is handled by a dedicated RTOS microcontroller, a buzzer alert will never be delayed by a Linux process hogging the CPU. For a safety-critical alert system, the UNO Q's architecture is technically superior. For a prototype or typical home use, the Pi's simplicity wins.
+
+### 5. Storage Reliability (Always-On Deployment)
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| Default storage | microSD card | 16 or 32 GB eMMC (soldered on board) |
+| Wear / corruption risk | SD cards can corrupt on unexpected power loss — a known Pi issue for always-on systems | eMMC is significantly more durable; designed for embedded always-on use |
+| Mitigation | Use a high-endurance SD card, or add NVMe SSD via HAT (~$15–30 extra) | No mitigation needed — eMMC is the default |
+
+**Winner: Arduino UNO Q.** For a system that runs 24/7 monitoring a room, storage reliability matters. The Pi's SD card weakness is well-documented and is the #1 cause of Pi failures in always-on deployments. The UNO Q's eMMC storage is inherently more reliable. The Pi can match this with an NVMe HAT, but that adds cost and complexity.
+
+### 6. Connectivity
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| Wi-Fi | Wi-Fi 5 (single-band on Pi 5, dual-band on some models) | Wi-Fi 5 dual-band (2.4/5 GHz) |
+| Bluetooth | 5.0 | 5.1 |
+| Ethernet | Gigabit (built-in RJ45 jack) | None (would require USB adapter) |
+
+**Winner: Raspberry Pi 5.** The built-in Gigabit Ethernet port is a significant advantage for reliable, low-latency networking — especially useful for remote monitoring, SSH management, or sending alert notifications. Wi-Fi capabilities are roughly comparable, but the Pi's physical Ethernet jack is something the UNO Q lacks entirely.
+
+### 7. Ecosystem and Community Support
+
+| | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| Years on market | Pi platform since 2012; Pi 5 since late 2023 | Brand new (2025) |
+| Community size | Enormous — millions of users, forums, tutorials, StackOverflow | Very small so far — growing |
+| Third-party accessories | Hundreds of HATs, cases, cameras, kits | Limited to Arduino shields + new carrier boards |
+| Documentation | Extensive official docs + massive community wiki | Official Arduino docs (good but new); limited community content |
+| Troubleshooting | Almost any problem has been solved and documented by someone | You may be the first person to hit a given issue |
+
+**Winner: Raspberry Pi 5, decisively.** This is the Pi's most significant advantage. When something doesn't work at 2 AM, the Pi ecosystem almost certainly has a forum post, blog article, or StackOverflow answer for it. The UNO Q, being brand new, does not have this safety net yet. For a first hardware project, this matters a lot.
+
+### 8. Price and Total Cost
+
+| Component | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| Board | ~$60–80 | TBD (likely $70–120 given Qualcomm SoC + eMMC) |
+| Camera | ~$25 (Camera Module 3) or ~$12 (Camera Module V2) | ~$10–20 (USB webcam) or TBD (carrier board + MIPI camera) |
+| Alert hardware | ~$5–15 (Pi HAT or breadboard buzzer/LED) | ~$5–15 (buzzer/LED on MCU GPIO or Modulino) |
+| Power supply | ~$12 (official 27W USB-C) | ~$10–15 (USB-C PD supply) |
+| Storage | ~$8–15 (microSD) or ~$25+ (NVMe HAT + SSD) | Included (eMMC on board) |
+| **Estimated total** | **~$105–145** | **~$95–170** (ranges wider due to price/accessory uncertainty) |
+
+**Winner: Raspberry Pi 5 (on known costs).** The Pi's pricing is well-established and predictable. The UNO Q's final street price is not yet confirmed, and the carrier board for MIPI-CSI cameras adds an unknown cost. The Pi's total system cost is likely lower and certainly more predictable.
+
+### Summary Scorecard
+
+| Category | Raspberry Pi 5 | Arduino UNO Q |
+|---|---|---|
+| Raw processing power | **Stronger** | Good |
+| Camera simplicity | **Much simpler** | Needs accessories |
+| AI / ML readiness | Good (with add-ons) | **Built-in** |
+| GPIO simplicity | **Simpler** | More complex (but more real-time) |
+| GPIO real-time reliability | Good | **Better** (dedicated RTOS MCU) |
+| Storage reliability | Weak (SD card) | **Strong** (eMMC) |
+| Connectivity | **Better** (Ethernet) | Good |
+| Ecosystem / community | **Far ahead** | New and growing |
+| Price predictability | **Known and affordable** | Uncertain |
+| Long-term potential for AI | Good | **Excellent** |
+
+### Final Verdict (Hardware Only)
+
+**The Raspberry Pi 5 with Camera Module and Pi HAT is the better choice for IVAD today.** It wins on processing power, camera simplicity, ecosystem maturity, connectivity, and price predictability. These are the factors that matter most for actually getting a working non-movement detection system up and running reliably.
+
+**The Arduino UNO Q is the more forward-looking hardware** and has genuine technical advantages in AI acceleration, storage reliability, and real-time GPIO. If you expect IVAD to evolve significantly toward AI-based detection (pose estimation, fall detection, person identification), the UNO Q's Qualcomm AI engine and dual ISPs give it a meaningful edge over the Pi 5 for that future. The eMMC storage is also a real practical win for always-on deployment.
+
+**Bottom line:** Get the Raspberry Pi 5 now — it is the proven, well-supported, simpler path to a working system. Keep an eye on the Arduino UNO Q as its ecosystem matures and pricing becomes clear. If IVAD grows into a more AI-heavy project down the road, the UNO Q could become the better platform at that point, and your Python + OpenCV skills transfer directly.
+
+---
+
+## General Recommendation
+
+**For IVAD as it exists today, the Raspberry Pi 5 remains the top recommendation.** It has the best combination of processing power, camera simplicity, ecosystem support, and known pricing. The Raspberry Pi 4 is a fine budget alternative with identical compatibility.
+
+**The Arduino UNO Q is a strong second choice** — and a genuine surprise if you were expecting a classic Arduino. It runs Debian Linux, supports Python and OpenCV, has built-in AI acceleration and dual ISPs for camera processing, and includes eMMC storage (more reliable than SD cards for always-on use). The trade-offs are that GPIO requires going through the MCU's RPC bridge, MIPI-CSI cameras need a carrier board, and the ecosystem is still young. If you are drawn to the Arduino platform or plan to add AI/ML features, the UNO Q deserves serious consideration — check the [Arduino Store](https://www.arduino.cc/product-uno-q/) for current pricing and availability.
 
 **The classic Arduino Uno (R3 / R4 WiFi) is not suitable** for this project — it cannot run Python, OpenCV, or process camera frames. It should not be confused with the UNO Q.
 
