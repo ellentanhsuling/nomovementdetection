@@ -1,0 +1,11 @@
+# IVAD: non-movement detection
+# Install on Windows for development (webcam); install on Raspberry Pi for deployment.
+
+# Motion detection (works on Windows and Pi)
+opencv-python-headless>=4.5.0
+
+# Raspberry Pi 5 camera (install only on Pi - not available on Windows)
+# picamera2  # install via: sudo apt install -y python3-picamera2
+
+# Optional: GPIO for Pi HAT (buzzer/LED) - only on Raspberry Pi
+# RPi.GPIO  # install via: pip install RPi.GPIO (or sudo apt install python3-rpi.gpio)
