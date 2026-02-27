@@ -27,7 +27,36 @@ The router admin page might need `http://` or `https://`. Try these in Safari:
 
 ---
 
-## Method 2: Use the Scan Script (Easiest!)
+## Method 2: Use Mac's Built-In Scanner (No Apps Needed!)
+
+**Use Terminal commands built into your Mac:**
+
+See detailed guide: **[MAC_BUILT_IN_SCANNER.md](MAC_BUILT_IN_SCANNER.md)**
+
+**Quick methods:**
+1. **Try hostname first:**
+   ```bash
+   ping -c 1 raspberrypi.local
+   ```
+   If it works, use: `ssh pi@raspberrypi.local`
+
+2. **Check ARP table:**
+   ```bash
+   arp -a | grep "172.20"
+   ```
+   Look for Raspberry Pi MAC addresses (B8:27:EB, DC:A6:32, E4:5F:01)
+
+3. **Test each device:**
+   ```bash
+   ssh pi@172.20.80.XXX
+   ```
+   (Replace XXX with IPs from ARP table)
+
+**Full guide:** See `MAC_BUILT_IN_SCANNER.md` for complete step-by-step instructions.
+
+---
+
+## Method 2.5: Use the Scan Script (Easiest!)
 
 I created a script that will scan your network automatically:
 

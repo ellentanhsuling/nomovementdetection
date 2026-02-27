@@ -184,6 +184,8 @@ By the end, you'll understand:
 **Troubleshooting:**
 - **FAQ_TROUBLESHOOTING.md** - Comprehensive troubleshooting guide with all common issues and solutions
 - **references/FREE_SERVICES_SETUP.md** - How to set up ThingSpeak and Discord for free
+- **references/MAC_BUILT_IN_SCANNER.md** - Using Mac's built-in Terminal commands to find Raspberry Pi on network
+- **references/FIND_PI_NOW.md** - Quick methods to find your Pi's IP address
 
 ---
 
