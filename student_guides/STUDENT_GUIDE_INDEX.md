@@ -186,6 +186,7 @@ By the end, you'll understand:
 - **references/FREE_SERVICES_SETUP.md** - How to set up ThingSpeak and Discord for free
 - **references/MAC_BUILT_IN_SCANNER.md** - Using Mac's built-in Terminal commands to find Raspberry Pi on network
 - **references/FIND_PI_NOW.md** - Quick methods to find your Pi's IP address
+- **references/ACCESS_PI_DIFFERENT_NETWORK.md** - How to access Raspberry Pi when it's on a different network (student's home network)
 
 ---
 

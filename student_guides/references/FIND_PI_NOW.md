@@ -169,6 +169,21 @@ pi@raspberrypi:~ $
 
 ---
 
+## ⚠️ Pi is on a Different Network?
+
+**If your student's Pi is on their home network (not your school network):**
+
+You can't find it using local network scanning. See: **[ACCESS_PI_DIFFERENT_NETWORK.md](ACCESS_PI_DIFFERENT_NETWORK.md)**
+
+**Quick options:**
+1. **Bring Pi to school** - Connect to same network (easiest)
+2. **Use Tailscale VPN** - Free, easy remote access (recommended)
+3. **Use ZeroTier VPN** - Alternative free VPN option
+
+See the full guide for step-by-step instructions.
+
+---
+
 ## Troubleshooting
 
 ### "Connection refused" when trying SSH
@@ -181,6 +196,7 @@ pi@raspberrypi:~ $
 - **Check:** Did you wait 2 minutes after powering on?
 - **Check:** Is Pi on the same WiFi network?
 - **Try:** Power cycle the Pi (unplug, wait 10 sec, plug back in)
+- **If Pi is on different network:** See `ACCESS_PI_DIFFERENT_NETWORK.md`
 
 ### Router admin page won't load
 - Try `http://` instead of `https://`
