@@ -188,6 +188,11 @@ By the end, you'll understand:
 - **references/FIND_PI_NOW.md** - Quick methods to find your Pi's IP address
 - **references/ACCESS_PI_DIFFERENT_NETWORK.md** - How to access Raspberry Pi when it's on a different network (student's home network)
 
+**Remote Access (Tailscale):**
+- **references/TAILSCALE_SETUP_STUDENT.md** - Complete Tailscale setup guide for students (on Raspberry Pi)
+- **references/TAILSCALE_SETUP_TEACHER.md** - Complete Tailscale setup guide for teachers (Mac)
+- **references/TAILSCALE_SETUP_WINDOWS.md** - Complete Tailscale setup guide for teachers (Windows)
+
 ---
 
 ## 💡 Tips for Success

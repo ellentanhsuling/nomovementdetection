@@ -66,7 +66,8 @@ Tailscale creates a secure VPN between devices - **completely free for personal 
 
 **📖 For detailed step-by-step instructions, see:**
 - **Students:** `TAILSCALE_SETUP_STUDENT.md` - Complete guide with troubleshooting
-- **Teachers:** `TAILSCALE_SETUP_TEACHER.md` - Complete guide with troubleshooting
+- **Teachers (Mac):** `TAILSCALE_SETUP_TEACHER.md` - Complete guide with troubleshooting
+- **Teachers (Windows):** `TAILSCALE_SETUP_WINDOWS.md` - Complete guide with troubleshooting
 
 ### Quick Overview
 
@@ -189,7 +190,8 @@ Requires:
 
 **📖 For complete detailed instructions with troubleshooting, see:**
 - **Students:** `TAILSCALE_SETUP_STUDENT.md` - Includes all troubleshooting steps, date fixes, manual installation, etc.
-- **Teachers:** `TAILSCALE_SETUP_TEACHER.md` - Includes App Store installation, verification steps, SSH troubleshooting, etc.
+- **Teachers (Mac):** `TAILSCALE_SETUP_TEACHER.md` - Includes App Store installation, verification steps, SSH troubleshooting, etc.
+- **Teachers (Windows):** `TAILSCALE_SETUP_WINDOWS.md` - Includes Windows installation, Command Prompt/PowerShell instructions, SSH setup, etc.
 
 **Quick summary:**
 1. Student follows `TAILSCALE_SETUP_STUDENT.md` on their Pi
