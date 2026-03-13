@@ -342,7 +342,26 @@ https://login.tailscale.com/a/xxxxx-xxxxx-xxxxx
    Success! Your device is now connected to Tailscale.
    ```
 
-**Note:** Use the same account your teacher uses, or ask your teacher which account to use.
+**IMPORTANT - Account Requirements (Tailnet):**
+
+**What is a Tailnet?**
+- A **tailnet** is Tailscale's term for a private network of devices
+- All devices signed in with the **same Tailscale account** belong to the **same tailnet**
+- Devices in the same tailnet can automatically see and connect to each other
+- Devices in **different tailnets** (different accounts) **cannot** see each other by default
+
+**Option 1: Same Account / Same Tailnet (Easiest)**
+- If you and your teacher sign in with the **exact same Tailscale account** (same email address), you'll both be in the **same tailnet**
+- You'll automatically see each other's devices
+- This is the simplest method - just use the same account!
+
+**Option 2: Different Accounts / Different Tailnets (Requires Sharing)**
+- If you use different accounts, you'll be in **different tailnets**
+- Your teacher needs to share their device with you, or you need to share your Pi with them
+- This requires additional setup in Tailscale admin console
+- **Recommended:** Use the same account for simplicity
+
+**Ask your teacher which account to use before signing in!**
 
 ---
 
@@ -478,6 +497,104 @@ sudo apt install curl -y
 **Solution:**
 - Verify your Pi's Tailscale IP: `tailscale ip -4`
 - Check Tailscale status: `sudo tailscale status`
+- **If using different accounts:** You need to share your Pi device (see section below)
+
+---
+
+## Alternative: Sharing Your Pi with Teacher (Different Accounts)
+
+**When to use this:** If you and your teacher are using **different Tailscale accounts** (different tailnets), you can share your Pi device with them so they can access it.
+
+**Note:** This is more complex than using the same account. We recommend using the same account for simplicity, but this method works if you need separate accounts.
+
+---
+
+### How Device Sharing Works
+
+When you share your Pi device with your teacher:
+- Your Pi stays in your tailnet
+- Your teacher gets access to your Pi from their tailnet
+- They can connect via SSH using your Pi's Tailscale IP address
+- You control who has access and can revoke it anytime
+
+---
+
+### Step-by-Step: Share Your Pi Device
+
+1. **Open Tailscale Admin Console**
+   - Go to: https://login.tailscale.com/admin/machines
+   - Or: Click Tailscale icon in menu bar → "Admin console"
+   - Sign in with your Tailscale account (if not already signed in)
+
+2. **Find Your Raspberry Pi Device**
+   - Look for your device name (usually `pi` or `raspberrypi`)
+   - Or look for your Tailscale IP address (from Step 7)
+   - Click on the device to open its details page
+
+3. **Click "Share..." or "Share device"**
+   - This option appears in the device details page
+   - If you don't see it, make sure you're on the device details page, not just the list
+
+4. **Invite Your Teacher**
+   - **Option A: Via Email**
+     - Enter your teacher's email address (the one they used for Tailscale)
+     - Click "Send invitation"
+     - Your teacher will receive an email with the share link
+   
+   - **Option B: Generate Share Link**
+     - Click "Generate share link" or "Copy link"
+     - Send the link to your teacher (via email, chat, etc.)
+     - Your teacher clicks the link to accept the share
+
+5. **Wait for Teacher to Accept**
+   - Your teacher needs to:
+     1. Check their email for the invitation (or click the share link)
+     2. Sign in to Tailscale (if not already signed in)
+     3. Accept the share
+   - This usually takes 1-2 minutes
+
+6. **Verify Sharing Worked**
+   - Your teacher should now be able to see your Pi in their Tailscale admin console
+   - They can connect via SSH: `ssh pi@<your-tailscale-ip>`
+   - Ask your teacher to confirm they can see your device
+
+---
+
+### Important Notes
+
+- **Your Pi stays in your tailnet** - it's just shared with your teacher
+- **Your teacher can only access your Pi** - they won't see your other devices
+- **You can revoke access anytime** from your Tailscale admin console
+- **This works with free Tailscale accounts** - no paid plan needed
+- **You need to share each time** if your Pi gets a new Tailscale IP (rare, but possible)
+
+---
+
+### Troubleshooting Device Sharing
+
+**Problem:** "I don't see the Share option"
+- **Solution:** Make sure you clicked on the device to open its details page
+- **Solution:** Make sure you're signed in to Tailscale admin console
+- **Solution:** Try refreshing the page
+
+**Problem:** "Teacher says they didn't receive the invitation"
+- **Solution:** Check that you entered the correct email address
+- **Solution:** Ask teacher to check spam/junk folder
+- **Solution:** Try generating a share link instead and send it directly
+
+**Problem:** "Teacher accepted but still can't see my Pi"
+- **Solution:** Wait 1-2 minutes for Tailscale to sync
+- **Solution:** Ask teacher to refresh their Tailscale admin console
+- **Solution:** Verify your Pi is online and connected: `sudo tailscale status`
+- **Solution:** Make sure you shared the correct device (check the Tailscale IP matches)
+
+---
+
+### "Teacher can't connect via Tailscale IP"
+**Solution:**
+- Verify your Pi's Tailscale IP: `tailscale ip -4`
+- Check Tailscale status: `sudo tailscale status`
+- **If using different accounts:** You need to share your Pi device (see section above)
 - Make sure both you and teacher are signed in to same Tailscale account
 - Wait a few minutes for Tailscale to fully connect
 - Teacher should check their Tailscale status too

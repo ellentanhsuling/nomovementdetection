@@ -72,10 +72,21 @@ You're setting up Tailscale on your Mac so you can access your student's Raspber
    - Microsoft account
    - Or create a new Tailscale account
 
-**Important:** 
-- Use the **same account type** your student used (or have them add you)
-- If student used Google → you should use Google (can be different Google accounts if they add you)
-- Or create a shared Tailscale account for the class
+**IMPORTANT - Account Requirements:**
+
+**Option 1: Same Account (Easiest - Recommended)**
+- If you and your student sign in with the **exact same Tailscale account** (same email address), you'll automatically see each other's devices
+- This is the simplest method - just have students use the same account you use
+- **Recommended for classes:** Create one shared Tailscale account (e.g., `classname@example.com`) and have all students use it
+
+**Option 2: Different Accounts (Requires Sharing)**
+- If using different accounts, you need to:
+  1. Have student share their Pi device with your account in Tailscale admin console, OR
+  2. Add students to your Tailscale network/organization
+- This requires additional setup and is more complex
+- **Not recommended** unless you have specific security requirements
+
+**For simplicity, use the same account for all students!**
 
 4. **Complete sign-in process**
    - Follow the prompts in your web browser
@@ -285,6 +296,116 @@ Before connecting, make sure:
 - [ ] Student has shared their Pi's Tailscale IP with you
 - [ ] You can ping the student's Pi (`ping -c 3 <student-ip>`)
 - [ ] Student has verified their Pi is connected (`sudo tailscale status` on Pi)
+
+---
+
+## FAQ
+
+### "Do I need to use the same account as my student?"
+
+**Short answer:** Yes, for the easiest setup. But there are options:
+
+**What is a Tailnet?**
+- A **tailnet** is Tailscale's term for a private network of devices
+- All devices signed in with the **same Tailscale account** belong to the **same tailnet**
+- Devices in the same tailnet can automatically see and connect to each other
+- Devices in **different tailnets** (different accounts) **cannot** see each other by default
+
+**Option 1: Same Account / Same Tailnet (Recommended)**
+- ✅ **Easiest:** Both you and student sign in with the exact same Tailscale account (same email)
+- ✅ **Same tailnet:** All devices automatically belong to the same tailnet
+- ✅ **Automatic:** Devices automatically see each other
+- ✅ **No extra setup:** Works immediately after both devices sign in
+- **Best for:** Classes where you want simple, quick setup
+
+**Option 2: Different Accounts / Different Tailnets (More Complex)**
+- ⚠️ **Different tailnets:** Devices belong to separate networks
+- ⚠️ Requires sharing devices or adding users to network
+- ⚠️ More setup steps needed
+- ⚠️ May require Tailscale for Teams (paid) for advanced sharing
+- **Best for:** When you need separate accounts for security reasons
+
+**Recommendation:** Use the same account (same tailnet) for all students. Create a shared account like `yourclass@example.com` that everyone uses. This ensures all devices are in the same tailnet and can see each other automatically.
+
+---
+
+## Alternative: Sharing Devices Between Different Tailnets
+
+**When to use this:** If you and your student are using **different Tailscale accounts** (different tailnets), you can still access their Pi by having them share the device with you.
+
+**Note:** This is more complex than using the same account. We recommend using the same account for simplicity, but this method works if you need separate accounts.
+
+---
+
+### How Device Sharing Works
+
+When a student shares their Pi device with you:
+- The Pi remains in the student's tailnet
+- You get access to that specific device from your tailnet
+- You can connect via SSH using the Pi's Tailscale IP address
+- The student controls who has access
+
+---
+
+### Step-by-Step: Student Shares Their Pi
+
+**The student needs to do this on their Pi or via Tailscale admin console:**
+
+1. **Student opens Tailscale admin console**
+   - Go to: https://login.tailscale.com/admin/machines
+   - Or click Tailscale icon → "Admin console"
+
+2. **Student finds their Raspberry Pi device**
+   - Look for device name (usually `pi` or `raspberrypi`)
+   - Or look for the Tailscale IP address (e.g., `100.95.13.28`)
+
+3. **Student clicks on the Pi device**
+   - This opens the device details page
+
+4. **Student clicks "Share..." or "Share device"**
+   - This option appears in the device details
+
+5. **Student invites you via email**
+   - Enter your email address (the one you used for Tailscale)
+   - Or generate a share link and send it to you
+
+6. **You accept the invitation**
+   - Check your email for the Tailscale invitation
+   - Click the link in the email
+   - Sign in to Tailscale (if not already signed in)
+   - Accept the share
+
+7. **Access the shared Pi**
+   - The Pi will now appear in your Tailscale admin console
+   - You can see its Tailscale IP address
+   - Connect via SSH: `ssh pi@<tailscale-ip>`
+
+---
+
+### Important Notes
+
+- **The Pi stays in the student's tailnet** - it's just shared with you
+- **You can only access the shared device** - you won't see other devices in the student's tailnet
+- **The student can revoke access** at any time from their admin console
+- **This works with free Tailscale accounts** - no paid plan needed
+
+---
+
+### Troubleshooting Device Sharing
+
+**Problem:** "I don't see the Share option"
+- **Solution:** Make sure you're looking at the device details page, not just the device list
+- **Solution:** The student must be signed in to Tailscale admin console
+
+**Problem:** "I didn't receive the invitation email"
+- **Solution:** Check spam/junk folder
+- **Solution:** Verify the email address is correct
+- **Solution:** Have student generate a share link instead
+
+**Problem:** "I accepted but still can't see the device"
+- **Solution:** Wait 1-2 minutes for Tailscale to sync
+- **Solution:** Refresh your Tailscale admin console
+- **Solution:** Check that both devices are online and connected to Tailscale
 
 ---
 
