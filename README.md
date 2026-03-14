@@ -2,6 +2,8 @@
 
 Detects long periods without motion (e.g. person down, no activity) using **Raspberry Pi 5** + camera module + Pi HAT. You can **develop and test on Windows** (with a webcam), then deploy the same code on the Pi.
 
+> **Choosing hardware?** See [HARDWARE.md](HARDWARE.md) for a detailed comparison of Raspberry Pi 5, Raspberry Pi 4, Pi Zero 2 W, Arduino Uno, ESP32-CAM, and NVIDIA Jetson — with recommendations for this project.
+
 ## Build and run on Windows
 
 1. **Create a virtual environment** (recommended):
