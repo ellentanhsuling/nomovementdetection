@@ -238,26 +238,38 @@
 
 ---
 
-## Part 2: Pose Analyzer (Placeholder)
+## Part 2: Pose Analyzer + inference backends
 
 **File**: `fall_detection/detection/pose_analyzer.py`
 
-**What it does**: Will analyze person's pose/position (for future enhancement).
+**What it does**: Runs pose-style estimation through **`shared/inference/`** so `FallDetector` can prefer real posture over motion-only heuristics when enabled.
 
-**For now**: Create structure, leave implementation simple.
+**How it fits together:**
+- **`PoseAnalyzer`** turns `detection.pose_estimation_enabled` on/off and picks a backend from **`inference.backend`**: `none`, **`mock`**, or **`hailo`**.
+- **`shared/inference/mock_pose.py`**: deterministic scenarios for your laptop (`standing`, `lying`, `fall_sequence`, `mirror`, etc.) — see `tests/test_fall_pose_pipeline.py`.
+- **`shared/inference/hailo_pose.py`**: stub for **Raspberry Pi 5 + Raspberry Pi AI HAT+ (Hailo-8L / Hailo-8)**. On the Pi you install **HailoRT** and wire **YOLOv8-pose** (or similar) compiled to a **`.hef`** file; then implement `infer()` to return the same dict shape as the mock backend.
+- **`fall_detection/main.py`** passes `camera_data` (and optional `frame` if `sensors.camera.include_frame_for_pose: true`) into `analyze_pose()`, then passes the result into **`FallDetector.analyze_frame(..., pose_data)`**.
 
-**Future options:**
-- **MediaPipe**: Google's pose estimation
-- **OpenPose**: Open-source pose detection
-- **YOLO**: Object detection with pose
+**Config (see `fall_detection/config.yaml` and `templates/config_fall_detection.yaml`):**
+```yaml
+detection:
+  pose_estimation_enabled: false   # set true to use a backend
+  prefer_pose_when_available: true
 
-**What to build:**
-- Class `PoseAnalyzer`
-- Method `analyze_pose()` - placeholder for now
-- Methods: `is_person_standing()`, `is_person_lying()`
-- Method `detect_sudden_change()` - detects position change
+inference:
+  backend: none    # none | mock | hailo
+  mock:
+    scenario: standing
+    fall_sequence_standing_frames: 3
+  hailo:
+    hef_path: ""   # path to .hef on the Pi when you implement Hailo
+```
 
-**MediaPipe reference** (for later): https://google.github.io/mediapipe/solutions/pose
+**Other options (not in-repo defaults):** You could still integrate **MediaPipe** or **CPU YOLO** behind the same `PoseInferenceBackend` interface if you add another backend module.
+
+**Hailo / Pi references (official):**
+- Raspberry Pi AI HAT+ product info: https://www.raspberrypi.com/products/ai-hat/
+- Hailo developer resources: https://hailo.ai/ — use the **Raspberry Pi 5** + Hailo install flow and model zoo / compiler docs when you are on hardware.
 
 ---
 
@@ -289,10 +301,16 @@ detection:
   floor_detection_enabled: true
   fall_confirmation_time: 10  # seconds
   frame_analysis_interval: 1  # seconds (real-time)
+  pose_estimation_enabled: false  # true when using mock or Hailo
+  prefer_pose_when_available: true
+
+inference:
+  backend: none   # mock | hailo on Pi + AI HAT+
 
 sensors:
   camera:
     check_interval: 1  # Check every second!
+    include_frame_for_pose: false  # true when Hailo pipeline needs raw frames
 ```
 
 **What to include:**
@@ -537,7 +555,7 @@ sensor.set_simulation_mode('fall')
 | Check interval | 30 seconds | 1 second |
 | Algorithm | Time-based | Position-based |
 | Alert speed | Escalation (delayed) | Immediate |
-| CPU usage | Low | High |
+| CPU usage | Low | Higher (lower if pose runs on Hailo NPU) |
 | Use case | Long inactivity | Emergency |
 
 ---
@@ -545,7 +563,7 @@ sensor.set_simulation_mode('fall')
 ## ✅ Checklist
 
 - [ ] Fall detector created and working
-- [ ] Pose analyzer placeholder created
+- [ ] Pose analyzer + inference config understood (`mock` / `hailo` path)
 - [ ] Alert manager created (immediate alerts)
 - [ ] Config file created
 - [ ] Main application created
@@ -567,8 +585,8 @@ sensor.set_simulation_mode('fall')
 - Improve position detection algorithm
 
 ### "Can't detect position"
-- **Solution**: For now, use simplified motion-based detection
-- Later: Add pose estimation (MediaPipe, etc.)
+- **Solution**: Keep `pose_estimation_enabled: false` to use motion heuristics, or enable **`mock`** inference to test the pose path without hardware
+- On Pi with **AI HAT+**: set **`inference.backend: hailo`**, implement `shared/inference/hailo_pose.py`, and tune `fall_confirmation_time`
 
 ---
 

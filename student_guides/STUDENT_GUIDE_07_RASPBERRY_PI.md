@@ -14,6 +14,17 @@ Moving your code to Raspberry Pi 5 and connecting the real camera.
 - Power supply (5V/5A for Pi 5)
 - Case with cooling
 
+### Optional: Raspberry Pi AI HAT+ (Hailo-8L / Hailo-8)
+
+For **accelerated** pose or object detection (recommended for a serious fall-detection prototype), you can add the official **Raspberry Pi AI HAT+**, which includes a **Hailo** NPU (often **Hailo-8L** on the lower-cost board).
+
+- Mounts on the Pi’s GPIO header; follow Raspberry Pi’s mechanical / power notes so the stack fits your case and cooling.
+- Install **Hailo** software on **64-bit Raspberry Pi OS** using Hailo’s **Raspberry Pi 5** instructions (HailoRT, firmware, and example apps — search **hailo-rpi5-examples**).
+- This repo expects you to complete **`shared/inference/hailo_pose.py`** on the Pi: load your **`.hef`** model (e.g. YOLOv8-pose compiled for Hailo), run inference each frame, and return the same pose dict as the **mock** backend (`pose_detected`, `position`, `confidence`, …).
+- In **`fall_detection/config.yaml`**, set **`inference.backend: hailo`**, **`detection.pose_estimation_enabled: true`**, and point **`inference.hailo.hef_path`** at your model. Set **`sensors.camera.include_frame_for_pose: true`** if your pipeline needs the raw numpy frame from Picamera2.
+
+Product page: https://www.raspberrypi.com/products/ai-hat/
+
 ---
 
 ## Part 1: Set Up Raspberry Pi OS
@@ -713,7 +724,7 @@ sudo usermod -a -G video $USER
 - Monitor system performance
 - Adjust thresholds based on real-world data
 - Improve detection algorithms
-- Add features (pose estimation, etc.)
+- Add or refine **Hailo** pose inference in `shared/inference/hailo_pose.py` when the AI HAT+ is available
 
 ---
 

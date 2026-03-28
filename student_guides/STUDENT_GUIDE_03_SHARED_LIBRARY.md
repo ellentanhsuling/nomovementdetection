@@ -14,10 +14,14 @@ Building code that **both projects will use**. This avoids writing the same code
 ```
 shared/
 ├── sensors/     # Camera code (mock for testing, real for Pi)
-├── alerts/      # Email, SMS, API alerts
+├── inference/   # Pose / NPU backends (mock on laptop; Hailo on Pi + AI HAT+)
+├── alerts/      # Email, SMS, API, webhook alerts
+├── data/        # Optional logging (e.g. ThingSpeak)
 ├── utils/       # Helper functions
 └── base/        # Base class for projects
 ```
+
+**About `shared/inference/`:** Fall detection can call a small **backend** that returns pose-like labels (`standing`, `lying`, etc.). With **`inference.backend: mock`** you can develop without a Pi. On a **Pi 5 with the Raspberry Pi AI HAT+ (Hailo-8L)**, set **`inference.backend: hailo`** and implement the real model in `shared/inference/hailo_pose.py` using Hailo’s Pi software (HailoRT, compiled `.hef` model). Official examples: search for **hailo-rpi5-examples** on GitHub.
 
 ---
 

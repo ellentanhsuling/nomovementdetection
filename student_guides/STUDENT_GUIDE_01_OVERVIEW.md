@@ -15,6 +15,8 @@ You'll build **two projects**:
 
 Both projects use a **Raspberry Pi 5** and **Camera Module**.
 
+**Optional (advanced / competition path):** A **Raspberry Pi AI HAT+** with a **Hailo-8L** (or Hailo-8) NPU runs pose-style models on-device so fall detection can use real body posture instead of motion-only guesses. The repo includes a **mock** inference path for your laptop and a **Hailo stub** to fill in on the Pi (`shared/inference/`).
+
 ---
 
 ## Project Structure (What You'll Create)
@@ -22,8 +24,9 @@ Both projects use a **Raspberry Pi 5** and **Camera Module**.
 ```
 raspberry/
 ├── shared/              # Code used by BOTH projects
-│   ├── sensors/        # Camera code
-│   ├── alerts/          # Email/SMS alerts
+│   ├── sensors/         # Camera code
+│   ├── inference/       # Pose backends: mock (dev) + Hailo stub (Pi + AI HAT+)
+│   ├── alerts/          # Email/SMS/webhook alerts
 │   ├── utils/           # Helper functions
 │   └── base/            # Base class
 │
@@ -74,6 +77,7 @@ raspberry/
 ✅ Configuration files (YAML)
 ✅ Project structure and organization
 ✅ Raspberry Pi development
+✅ (Optional) Edge AI: config-driven pose inference and Hailo on Pi
 
 ---
 
@@ -83,6 +87,7 @@ raspberry/
 - A computer (Mac, Windows, or Linux)
 - Internet connection
 - (Later) Raspberry Pi 5 + Camera Module
+- (Optional) Raspberry Pi **AI HAT+** with **Hailo-8L** for accelerated pose / fall detection on the device
 
 ---
 

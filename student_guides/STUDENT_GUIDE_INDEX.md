@@ -34,7 +34,8 @@ Follow these guides **in order** to build the entire project:
 **What it covers:**
 - Building shared code (used by both projects)
 - Camera sensors (mock + real)
-- Alert system (email, SMS, API)
+- Inference folder (`shared/inference/`) — mock vs Hailo path for pose on Pi + AI HAT+
+- Alert system (email, SMS, API, webhook)
 - Utilities and base classes
 
 **Time needed:** 4-6 hours
@@ -50,6 +51,7 @@ Follow these guides **in order** to build the entire project:
 - `shared/utils/config_loader.py`
 - `shared/utils/time_utils.py`
 - `shared/base/monitoring_base.py`
+- `shared/inference/` (base, mock_pose, hailo_pose — optional advanced track)
 
 ---
 
@@ -77,7 +79,8 @@ Follow these guides **in order** to build the entire project:
 **What it covers:**
 - Building fall detection project
 - Fall detector algorithm
-- Position analysis
+- Pose analyzer + **`inference.backend`** (`mock` on laptop, **`hailo`** on Pi + AI HAT+)
+- Position analysis (motion fallback vs pose when enabled)
 - Immediate alerts
 - Main application
 
