@@ -17,6 +17,27 @@ build/
 # Local config (keep example only)
 config.yaml
 
+# Secrets and local overrides
+.env
+.env.*
+!.env.example
+
+# Decks / presentations (keep locally; not in repo)
+*.pptx
+*.pptx.bak
+
+# Historical snapshots (use git history instead)
+backups/
+
+# Markdown: keep repo root README + student_guides only; ignore other *.md
+*.md
+!/README.md
+!student_guides/**/*.md
+
+# Local-only overrides / scratch assets
+.gitignore.local
+tailscale/
+
 # IDE / OS
 .idea/
 .vscode/

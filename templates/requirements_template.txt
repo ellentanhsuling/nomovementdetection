@@ -1,0 +1,28 @@
+# Requirements File Template
+# Lists all Python packages your project needs
+# Format: package_name>=version
+
+# Core Dependencies
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Alert System (optional)
+twilio>=8.10.0  # For SMS alerts
+
+# Image Processing
+numpy>=1.24.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# Data Handling
+python-dateutil>=2.8.2
+
+# Testing
+pytest>=7.4.3
+
+# Note: When deploying to Raspberry Pi, also install:
+# picamera2>=0.3.12  # For Raspberry Pi Camera Module
+
+# To install all packages:
+# pip install -r requirements.txt

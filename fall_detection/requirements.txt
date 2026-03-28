@@ -1,0 +1,28 @@
+# Fall Detection Project Requirements
+# Also requires shared library dependencies
+
+# Core Dependencies (from shared)
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Alert System
+twilio>=8.10.0  # For SMS alerts (optional)
+
+# Image Processing (for camera)
+numpy>=1.24.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# Data Handling
+python-dateutil>=2.8.2
+
+# Testing
+pytest>=7.4.3
+
+# Optional: Pose Estimation (for advanced fall detection)
+# mediapipe>=0.10.0  # Google MediaPipe for pose estimation
+# tensorflow>=2.13.0  # If using TensorFlow models
+
+# Note: When deploying to Raspberry Pi, also install:
+# picamera2>=0.3.12  # For Raspberry Pi Camera Module
